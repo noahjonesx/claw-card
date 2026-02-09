@@ -141,8 +141,10 @@ class TokenTracker:
                 headers=headers,
                 json={
                     'jsonrpc': '2.0',
-                    'method': 'sessions.status',
-                    'params': {},
+                    'method': 'session.status',
+                    'params': {
+                        'sessionKey': 'agent:main:main'
+                    },
                     'id': 1
                 },
                 timeout=5
@@ -150,13 +152,21 @@ class TokenTracker:
             
             if response.status_code == 200:
                 data = response.json()
-                if 'result' in data and 'usage' in data['result']:
-                    usage = data['result']['usage']
-                    return {
-                        'current': usage.get('tokens', 0),
-                        'total': 200000,
-                        'remaining': 200000 - usage.get('tokens', 0)
-                    }
+                if 'result' in data:
+                    result = data['result']
+                    # Parse the session status response
+                    if 'turns' in result:
+                        total_tokens = 0
+                        for turn in result.get('turns', []):
+                            if 'usage' in turn:
+                                total_tokens += turn['usage'].get('inputTokens', 0)
+                                total_tokens += turn['usage'].get('outputTokens', 0)
+                        
+                        return {
+                            'current': total_tokens,
+                            'total': 200000,
+                            'remaining': 200000 - total_tokens
+                        }
             return None
             
         except Exception as e:
