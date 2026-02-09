@@ -53,6 +53,16 @@ class TokenTracker:
         )
         self.current_label.pack()
         
+        # USD cost (money green)
+        self.cost_label = tk.Label(
+            self.usage_frame,
+            text="Cost: $0.00",
+            font=("Arial", 16, "bold"),
+            bg='#1a1a2e',
+            fg='#00ff00'
+        )
+        self.cost_label.pack(pady=5)
+        
         # Progress bar style
         style = ttk.Style()
         style.theme_use('default')
@@ -146,12 +156,17 @@ class TokenTracker:
         remaining = self.total_tokens - current
         percent = (current / self.total_tokens) * 100
         
+        # Calculate cost (Claude Sonnet 4.5: ~$3/1M input, ~$15/1M output)
+        # Using average estimate of $0.01 per 1000 tokens
+        cost_usd = (current / 1000) * 0.01
+        
         # Format numbers
         current_str = f"{current:,}"
         remaining_str = f"{remaining:,}"
         
         # Update labels
         self.current_label.config(text=f"Current: {current_str} tokens")
+        self.cost_label.config(text=f"Cost: ${cost_usd:.2f}")
         self.remaining_label.config(text=f"Remaining: {remaining_str}")
         self.percent_label.config(text=f"{percent:.1f}%")
         
