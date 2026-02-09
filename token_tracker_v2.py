@@ -115,6 +115,16 @@ class TokenTracker:
         )
         self.percent_label.grid(row=1, column=0, columnspan=2, pady=10)
         
+        # USD cost display
+        self.cost_label = tk.Label(
+            self.root,
+            text="$0.00 USD",
+            font=("Arial", 18, "bold"),
+            bg='#1a1a2e',
+            fg='#00ff88'
+        )
+        self.cost_label.pack(pady=5)
+        
         # Status
         self.status_label = tk.Label(
             self.root,
@@ -166,7 +176,7 @@ class TokenTracker:
         
         # Update labels
         self.current_label.config(text=f"Current: {current_str} tokens")
-        self.cost_label.config(text=f"Cost: ${cost_usd:.2f}")
+        self.cost_label.config(text=f"${cost_usd:.2f} USD")
         self.remaining_label.config(text=f"Remaining: {remaining_str}")
         self.percent_label.config(text=f"{percent:.1f}%")
         
